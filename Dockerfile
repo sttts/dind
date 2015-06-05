@@ -1,5 +1,5 @@
-FROM ubuntu:14.04
-MAINTAINER jerome.petazzoni@docker.com
+FROM mesosphere/mesos:0.22.1-1.0.ubuntu1404
+MAINTAINER Dr. Stefan Schimanski <stefan.schimanski@gmail.com>
 
 # Let's start with some basic stuff.
 RUN apt-get update -qq && apt-get install -qqy \
