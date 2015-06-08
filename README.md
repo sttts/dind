@@ -37,6 +37,16 @@ the Docker daemon and expose it over said port. When started *without* the
 `PORT` environment variable, the image will run the Docker daemon in the
 background and execute a shell for you to play.
 
+## Running mesos-slave
+
+This forked version of dind is based on the Mesos Docker containers from https://github.com/mesosphere/docker-containers/tree/master/mesos. By passing the `mesos-slave` entrypoint to `docker run`, a slave is started using the container-local Docker daemon:
+
+```
+docker run -it -e MESOS_SWITCH_USER=0 --privileged mesos-did-slave wrapdocker mesos-slave --master=zk://172.17.42.3:2181/mesos --containerizers=docker,mesos
+```
+
+Note, that routable container IPs (`172.17.42.*`) are used here, making port forwardings unnecessary.
+
 ### Daemon configuration
 
 You can use the `DOCKER_DAEMON_ARGS` environment variable to configure the
