@@ -42,7 +42,9 @@ background and execute a shell for you to play.
 This forked version of dind is based on the Mesos Docker containers from https://github.com/mesosphere/docker-containers/tree/master/mesos. By passing the `mesos-slave` entrypoint to `docker run`, a slave is started using the container-local Docker daemon:
 
 ```
-docker run -it -e MESOS_SWITCH_USER=0 --privileged mesos-did-slave wrapdocker \
+docker run -it \
+    -e MESOS_SWITCH_USER=0 -e DOCKER_DAEMON_ARGS="--log-level=error" \
+    --privileged mesos-did-slave wrapdocker \
     mesos-slave --master=zk://172.17.42.3:2181/mesos \
                 --containerizers=docker,mesos
 ```
