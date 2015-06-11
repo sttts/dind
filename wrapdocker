@@ -86,6 +86,19 @@ popd >/dev/null
 # delete it so that docker can start.
 rm -rf /var/run/docker.pid
 
+# create docker0 bridge manually
+brctl addbr docker0
+brctl addif docker0 eth0
+ip link set docker0 up
+
+# move ip to the bridge
+IP=$(ip addr show eth0 | grep -w inet | awk '{ print $2; }')
+DEFAULT_ROUTE=$(ip route | grep default | sed 's/eth0/docker0/')
+ip addr del $IP dev eth0
+ip addr add $IP dev docker0
+ip route add $DEFAULT_ROUTE
+DOCKER_DAEMON_ARGS="$DOCKER_DAEMON_ARGS --bip $IP"
+
 # If we were given a PORT environment variable, start as a simple daemon;
 # otherwise, spawn a shell as well
 if [ "$PORT" ]
