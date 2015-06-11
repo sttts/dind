@@ -51,6 +51,20 @@ docker run -it \
 
 Note, that routable container IPs (`172.17.42.*`) are used here, making port forwardings unnecessary.
 
+### Multi-slave setup
+
+To run multiple slave with Docker-in-Docker, one has to manually seperate the network ranges, e.g. like this:
+
+```
+for n in 1 2 3; do
+  docker run -dns=8.8.8.8 -it -name slave$n \
+    -e MESOS_SWITCH_USER=0 \
+    -e DOCKER_DAEMON_ARGS="--log-level=error --fixed-cidr=172.17.$n.0/24" \
+    --privileged mesos-did-slave wrapdocker mesos-slave --master=zk://172.17.42.3:2181/mesos --containerizers=docker,mesos
+```
+
+This will also work if the outer docker daemon uses routable container IPs, of course by choosing approprate sub-network ranges of the outer container network range.
+
 ### Daemon configuration
 
 You can use the `DOCKER_DAEMON_ARGS` environment variable to configure the
