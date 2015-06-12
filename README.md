@@ -44,9 +44,8 @@ This forked version of dind is based on the Mesos Docker containers from https:/
 ```
 docker run -it \
     -e MESOS_SWITCH_USER=0 -e DOCKER_DAEMON_ARGS="--log-level=error" \
-    --privileged mesos-did-slave wrapdocker \
-    mesos-slave --master=zk://172.17.42.3:2181/mesos \
-                --containerizers=docker,mesos
+    --privileged mesos-dind-slave \
+      --master=zk://172.17.42.3:2181/mesos --containerizers=docker,mesos
 ```
 
 Note, that routable container IPs (`172.17.42.*`) are used here, making port forwardings unnecessary.
@@ -60,7 +59,8 @@ for n in 1 2 3; do
   docker run -dns=8.8.8.8 -it -name slave$n \
     -e MESOS_SWITCH_USER=0 \
     -e DOCKER_DAEMON_ARGS="--log-level=error --fixed-cidr=172.17.$n.0/24" \
-    --privileged mesos-did-slave wrapdocker mesos-slave --master=zk://172.17.42.3:2181/mesos --containerizers=docker,mesos
+    --privileged mesos-dind-slave \
+      --master=zk://172.17.42.3:2181/mesos --containerizers=docker,mesos
 ```
 
 This will also work if the outer docker daemon uses routable container IPs, of course by choosing approprate sub-network ranges of the outer container network range.
